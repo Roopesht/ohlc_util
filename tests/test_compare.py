@@ -1,4 +1,5 @@
 import unittest
+from ohlc.util1 import is_it_ascending
 #from testdata1 import *
 class test_compare(unittest.TestCase):
     def setUp(self) -> None:
