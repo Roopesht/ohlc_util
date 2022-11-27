@@ -1,3 +1,4 @@
+from getclosevalues import closevalues
 class Strategy:
     symbol = None
     def is_buy(self, values):
@@ -6,12 +7,12 @@ class Strategy:
         return True
 
 class User:
-    def __init__(self, id):
+    def __init__(self, id, username, balance, risk_perc, profit_perc):
         self.id = id
-        self.username = 's'
-        self.balance = 20000
-        self.risk_perc = .02
-        self.profit_perc = .05
+        self.username = username
+        self.balance = balance
+        self.risk_perc = risk_perc
+        self.profit_perc = profit_perc
 
 class Trend:
     up='u'
@@ -24,19 +25,26 @@ class Strength:
     strong = 3
 
 class PredData:
-    def __init__(self, symbol = '', entryat=0, direction = Trend.sideways, exit = 0, trend_strength=Strength.normal, stoploss=0):
+    def __init__(self, symbol = 'Niftybank', entryat=0, direction = Trend.sideways, exit = 0, trend_strength=Strength.normal, stoploss=200):
         self.symbol = symbol
-        self.entryat = entryat
-        self.exit = exit
-        self.direction = Trend
-        self.trend_strength= trend_strength
-        self.stop_loss = stoploss
+        self.entryat = entryat # we need will get after avg is calculated
+        self.exit = exit # after the loss is greater than balance*risk_amt
+        self.direction = Trend # requires the close data
+        self.trend_strength= trend_strength # requires the close data
+        self.stop_loss=stoploss #balance*risk_amt
+
+    def getpredictiondata(self):
+        gc=closevalues()
+        close_values=gc.closevaluesfn()
+        return close_values
 
 class Prediction:
     def __init__(self, symbol='BANKNIFTY'):
         pass
     def get_prediction(self):
-        return PredData( )
+        return PredData()
+
+
 
 class StrategyHelper:
     def __init__(self):
@@ -86,15 +94,15 @@ class Broker:
     def Sell(self, symbol, qty, price):
         pass
     def GetPositions(self):
-        pass
 
-def __main__():
-    user = User(1)
-    positions = Broker().GetPositions()
-    pred_data = Prediction().get_prediction()
-    strategy = StrategyHelper().get_strategy(pred_data)
-    user_strategy = UserStrategy(user, positions, strategy, pred_data)
-    Impl().execute(user_strategy)
+
+
+user = User(1, "Rahul", 20000, 0.02, 0.05)
+positions = Broker().GetPositions()
+pred_data = Prediction().get_prediction()
+strategy = StrategyHelper().get_strategy(pred_data)
+user_strategy = UserStrategy(user, positions, strategy, pred_data)
+Impl().execute(user_strategy)
 
 
 
